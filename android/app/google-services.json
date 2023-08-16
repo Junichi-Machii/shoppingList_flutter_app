@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "470380588012",
+    "firebase_url": "https://flutter-list-database-373f2-default-rtdb.firebaseio.com",
+    "project_id": "flutter-list-database-373f2",
+    "storage_bucket": "flutter-list-database-373f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470380588012:android:55587a593edc60e108eec9",
+        "android_client_info": {
+          "package_name": "com.example.shopping_list_app01"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "470380588012-sodptrat02j852rggliqss2t51u3hn22.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLIFa5lN_tJB9vg25HUvrpMrhBQGIkHnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "470380588012-sodptrat02j852rggliqss2t51u3hn22.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "470380588012-avtle9vknun2te6r96ph0lo9js9p4b7h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.shoppingListApp01.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

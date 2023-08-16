@@ -17,6 +17,8 @@ class GroceryList extends StatefulWidget {
 class _GroceryListState extends State<GroceryList> {
   List<GroceryItem> _groceryItems = [];
 
+  var _isLoading = true;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -29,6 +31,7 @@ class _GroceryListState extends State<GroceryList> {
         'flutter-list-database-373f2-default-rtdb.firebaseio.com',
         'shopping-list.json');
     final response = await http.get(url);
+    
     final Map<String, dynamic> listData =
         json.decode(response.body);
     final List<GroceryItem> loadedItems = [];
@@ -47,11 +50,13 @@ class _GroceryListState extends State<GroceryList> {
     }
     setState(() {
       _groceryItems = loadedItems;
+      _isLoading = false;
+
     });
   }
 
   void _addItem() async {
-    await Navigator.of(context).push<GroceryItem>(
+   final newItem = await Navigator.of(context).push<GroceryItem>(
       MaterialPageRoute(
         builder: (ctx) {
           return const NewItem();
@@ -59,7 +64,13 @@ class _GroceryListState extends State<GroceryList> {
       ),
     );
 
-    _loadItems();
+    if (newItem == null) {
+      return;
+    }
+    setState(() {
+      _groceryItems.add(newItem);
+    });
+  
   }
 
   void _removeItem(GroceryItem item) {
@@ -73,6 +84,10 @@ class _GroceryListState extends State<GroceryList> {
     Widget content = const Center(
       child: Text("アイテムを追加してください。"),
     );
+
+    if (_isLoading){
+      content = const Center(child: CircularProgressIndicator(),);
+    }
 
     if (_groceryItems.isNotEmpty) {
       content = ListView.builder(

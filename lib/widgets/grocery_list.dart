@@ -18,6 +18,7 @@ class _GroceryListState extends State<GroceryList> {
   List<GroceryItem> _groceryItems = [];
 
   var _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -31,9 +32,15 @@ class _GroceryListState extends State<GroceryList> {
         'flutter-list-database-373f2-default-rtdb.firebaseio.com',
         'shopping-list.json');
     final response = await http.get(url);
-    
-    final Map<String, dynamic> listData =
-        json.decode(response.body);
+
+    //エラーメッセージの表示
+    if (response.statusCode >= 400) {
+      setState(() {
+        _error = 'データの取得に失敗しました。 もう一度試してください。';
+      });
+    }
+
+    final Map<String, dynamic> listData = json.decode(response.body);
     final List<GroceryItem> loadedItems = [];
     for (final item in listData.entries) {
       final category = categories.entries
@@ -51,12 +58,11 @@ class _GroceryListState extends State<GroceryList> {
     setState(() {
       _groceryItems = loadedItems;
       _isLoading = false;
-
     });
   }
 
   void _addItem() async {
-   final newItem = await Navigator.of(context).push<GroceryItem>(
+    final newItem = await Navigator.of(context).push<GroceryItem>(
       MaterialPageRoute(
         builder: (ctx) {
           return const NewItem();
@@ -70,13 +76,26 @@ class _GroceryListState extends State<GroceryList> {
     setState(() {
       _groceryItems.add(newItem);
     });
-  
   }
 
-  void _removeItem(GroceryItem item) {
+  void _removeItem(GroceryItem item) async{
+    final index = _groceryItems.indexOf(item);
+
     setState(() {
       _groceryItems.remove(item);
     });
+  final url = Uri.https(
+        'flutter-list-database-373f2-default-rtdb.firebaseio.com',
+        'shopping-list/${item.id}.json');
+    final response =  await http.delete(url);
+
+    if (response.statusCode >= 400){
+      
+       setState(() {
+      _groceryItems.insert(index, item);
+    });
+    }
+
   }
 
   @override
@@ -85,8 +104,10 @@ class _GroceryListState extends State<GroceryList> {
       child: Text("アイテムを追加してください。"),
     );
 
-    if (_isLoading){
-      content = const Center(child: CircularProgressIndicator(),);
+    if (_isLoading) {
+      content = const Center(
+        child: CircularProgressIndicator(),
+      );
     }
 
     if (_groceryItems.isNotEmpty) {
@@ -104,9 +125,17 @@ class _GroceryListState extends State<GroceryList> {
               height: 24,
               color: _groceryItems[index].category.color,
             ),
-            trailing: Text(_groceryItems[index].quantity.toString()),
+            trailing: Text(
+              _groceryItems[index].quantity.toString(),
+            ),
           ),
         ),
+      );
+    }
+
+    if (_error != null) {
+      content = Center(
+        child: Text(_error!),
       );
     }
 

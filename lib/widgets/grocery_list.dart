@@ -39,7 +39,13 @@ class _GroceryListState extends State<GroceryList> {
         _error = 'データの取得に失敗しました。 もう一度試してください。';
       });
     }
-
+print(response.body);
+if (response.body == 'null' ){
+  setState(() {
+    _isLoading = false;
+  });
+  return;
+}
     final Map<String, dynamic> listData = json.decode(response.body);
     final List<GroceryItem> loadedItems = [];
     for (final item in listData.entries) {
